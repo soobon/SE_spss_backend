@@ -1,7 +1,12 @@
 package com.example.SE_project.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -17,7 +22,7 @@ public class Student {
     private String id;
 
     @Column(name = "namee", length = 20)
-    private String namee;
+    private String name;
 
     @Column(name = "email",
             columnDefinition = "varchar(40) check (email like '%_@_%')",
@@ -34,4 +39,8 @@ public class Student {
     @OneToOne
     @JoinColumn(name = "username", referencedColumnName = "username")
     private Account account;
+
+    @OneToMany(mappedBy = "student")
+    @JsonManagedReference
+    private List<File> file_list;
 }
