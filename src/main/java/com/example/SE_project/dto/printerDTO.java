@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.sql.Date;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -14,5 +16,5 @@ public class printerDTO {
     private String building ;
     private Integer state ;
     private String model;
-    private String import_date;
+    private Date import_date;
 }

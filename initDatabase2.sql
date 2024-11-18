@@ -45,9 +45,9 @@ CREATE TABLE print (
     nb_of_page_used INT NOT NULL,
     nb_of_coppy INT NOT NULL,
     paper_size VARCHAR(5) CHECK (paper_size = 'A3' OR paper_size = 'A4') NOT NULL,
-    print_date DATE NOT NULL,
     statuss INT DEFAULT 0 CHECK (statuss = 0 OR statuss = 1 OR statuss = 2),
     one_or_two_side int not null check (one_or_two_side = 1 or one_or_two_side = 2),
+    print_date date not null,
     PRIMARY KEY (printer_id, file_id),
     FOREIGN KEY (printer_id) REFERENCES printer(printer_id),
     FOREIGN KEY (file_id) REFERENCES files(file_id)
@@ -128,4 +128,29 @@ INSERT INTO print (printer_id, file_id, nb_of_page_used, nb_of_coppy, paper_size
 INSERT INTO spss (semester, nb_of_page_default, reset_date) VALUES
 ('2024', 100, '2024-06-01'),
 ('2027', 200, '2027-06-01');
+
+select * from student;
+select * from print;
+select * from files;
+
+select s.id , f.file_name, p.nb_of_page_used , p.statuss ,  p.print_date
+from student s, print p,   files f
+where s.id = f.id and p.file_id = f.file_id;
+
+DELIMITER $$
+CREATE PROCEDURE GetStudentPrintDetails()
+BEGIN
+    SELECT s.id, f.file_name, p.nb_of_page_used, p.statuss, p.print_date
+    FROM student s
+    JOIN files f ON s.id = f.id
+    JOIN print p ON p.file_id = f.file_id;
+END $$
+DELIMITER ;
+
+CALL GetStudentPrintDetails();
+
+
+
+
+
 

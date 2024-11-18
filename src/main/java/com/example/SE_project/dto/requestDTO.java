@@ -5,15 +5,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Date;
-
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PrintDTO {
+@Getter
+@Setter
+public class requestDTO {
+    private String id ;
+    private String file_name;
     private Integer nb_of_page_used;
-    private Integer nb_of_copy;
-    private String paper_size;
+    private Integer statuss ;
     private String print_date;
+    private String building;
+    private String print_id ;
 }

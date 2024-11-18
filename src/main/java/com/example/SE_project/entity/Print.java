@@ -22,13 +22,15 @@ public class Print {
 
     @Column(name = "nb_of_page_used", nullable = false)
     private Integer nb_of_page_used;
-    @Column(name = "nb_of_copy", nullable = false)
+    @Column(name = "nb_of_coppy", nullable = false)
     private Integer nb_of_copy;
     @Column(name = "paper_size",
             columnDefinition = "varchar(5) check (paper_size = 'A3'  or paper_size = 'A4')",
             nullable = false
     )
     private String paper_size;
+
+
     @Column(name = "print_date", nullable = false)
     private Date print_date;
 
