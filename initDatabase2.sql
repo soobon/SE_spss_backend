@@ -1,5 +1,4 @@
 
-
 create database spss;
 use spss ;
 create table accounts(
@@ -56,6 +55,7 @@ CREATE TABLE print (
 create table spss (
 	semester varchar(10) primary key ,
     nb_of_page_default int ,
+    nb_of_page_used int,
     reset_date date
 );
 -- -----------------------------------------
@@ -129,28 +129,110 @@ INSERT INTO spss (semester, nb_of_page_default, reset_date) VALUES
 ('2024', 100, '2024-06-01'),
 ('2027', 200, '2027-06-01');
 
-select * from student;
-select * from print;
-select * from files;
-
-select s.id , f.file_name, p.nb_of_page_used , p.statuss ,  p.print_date
-from student s, print p,   files f
-where s.id = f.id and p.file_id = f.file_id;
-
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE GetStudentPrintDetails()
 BEGIN
-    SELECT s.id, f.file_name, p.nb_of_page_used, p.statuss, p.print_date
-    FROM student s
-    JOIN files f ON s.id = f.id
-    JOIN print p ON p.file_id = f.file_id;
-END $$
+    SELECT 
+        s.id, 
+        f.file_name, 
+        p.nb_of_page_used, 
+        p.statuss, 
+        p.print_date, 
+        pr.building,
+        pr.printer_id
+    FROM 
+        student s
+    JOIN 
+        files f ON s.id = f.id
+    JOIN 
+        print p ON p.file_id = f.file_id
+    JOIN 
+        printer pr ON pr.printer_id = p.printer_id;
+END //
 DELIMITER ;
 
-CALL GetStudentPrintDetails();
+-- CALL GetStudentPrintDetails();
+
+DELIMITER //
+
+CREATE PROCEDURE GetStudentPrintDetailsByPrinterId(IN printerId VARCHAR(20))
+BEGIN
+    SELECT 
+        s.id, 
+        f.file_name, 
+        p.nb_of_page_used, 
+        p.statuss, 
+        p.print_date, 
+        pr.building,
+        pr.printer_id
+    FROM 
+        student s
+    JOIN 
+        files f ON s.id = f.id
+    JOIN 
+        print p ON p.file_id = f.file_id
+    JOIN 
+        printer pr ON pr.printer_id = p.printer_id
+    WHERE 
+        pr.printer_id = printerId;
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE PROCEDURE GetStudentPrintDetailsByStudentId(IN studentId VARCHAR(9))
+BEGIN
+    SELECT 
+        s.id, 
+        f.file_name, 
+        p.nb_of_page_used, 
+        p.statuss, 
+        p.print_date, 
+        pr.building,
+        pr.printer_id
+    FROM 
+        student s
+    JOIN 
+        files f ON s.id = f.id
+    JOIN 
+        print p ON p.file_id = f.file_id
+    JOIN 
+        printer pr ON pr.printer_id = p.printer_id
+    WHERE 
+        s.id = studentId;
+END //
+
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE InsertPrinter(IN building VARCHAR(255), IN model VARCHAR(255), IN import_date DATE)
+BEGIN
+    DECLARE id VARCHAR(9);
+    SET id = LPAD(FLOOR(RAND() * 1000000000), 9, '0');
+    INSERT INTO printer (printer_id, building, state, model, import_date) 
+    VALUES (id, building, 0, model, import_date);
+    SELECT * 
+    FROM printer
+    WHERE printer_id = id;
+END $$
+DELIMITER ;
+DELIMITER //
+CREATE PROCEDURE UpdateNbOfPageLeft(std_id VARCHAR(50)  , page_add int )  
+BEGIN
+    UPDATE student
+    SET nb_of_page_left = nb_of_page_left + page_add	
+    WHERE id = std_id;
+    
+    select * from student where id=std_id;
+END;
+//
+DELIMITER ;
 
 
-
-
-
-
+select * from student WHERE id = '901234567';
+CALL UpdateNbOfPageLeft('901234567' , 100);
+select * from student WHERE id = '901234567';
+select * from print;
+select * from files;
+select * from printer;
