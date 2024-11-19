@@ -20,7 +20,7 @@ import java.util.List;
 public class File {
     @Id
     @Column(name = "file_id", length = 100)
-    private String file_id;
+    private String fileid;
     @Column(name = "upload_date", nullable = false)
     private Date upload_date;
     @Column(name = "file_name", length = 20, nullable = false)
