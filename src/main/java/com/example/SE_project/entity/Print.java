@@ -29,10 +29,14 @@ public class Print {
             nullable = false
     )
     private String paper_size;
-
-
     @Column(name = "print_date", nullable = false)
     private Date print_date;
+
+    @Column(name = "one_or_two_side",
+            columnDefinition = "int check (one_or_two_side = 1 or one_or_two_side = 2)",
+            nullable = false
+    )
+    private Integer one_or_two_side;
 
     @ManyToOne
     @MapsId("printerId")
@@ -44,4 +48,8 @@ public class Print {
     @MapsId("fileId")
     @JoinColumn(name = "file_id", columnDefinition = "varchar(100)")
     private File file;
+    @Column(name = "statuss",
+            columnDefinition = "int check (statuss = 0 OR statuss = 1 OR statuss = 0)"
+    )
+        private int status;
 }

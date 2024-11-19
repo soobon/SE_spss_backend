@@ -18,7 +18,6 @@ import java.text.SimpleDateFormat;
 @CrossOrigin("*")
 @AllArgsConstructor
 public class AdminController {
-
     private AdminService adminService ;
 
     @GetMapping("/{id}")
@@ -51,13 +50,42 @@ public class AdminController {
             @RequestParam String building,
             @RequestParam String model,
             @RequestParam String importDateString) throws ParseException {
-
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date utilDate = sdf.parse(importDateString);
         java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
         return new ResponseEntity<>(adminService.insertNewPrinter(building,model,sqlDate),HttpStatus.OK);
     }
+    @PostMapping("/new")
+    public ResponseEntity<?>newsemester(@RequestParam String semester
+    ,@RequestParam Integer numOfPaperDefault)
+    {
+        return new ResponseEntity<>(adminService.reset(semester,numOfPaperDefault),
+                HttpStatus.OK);
 
+    }
+
+    @PutMapping("/setPrinterState")
+    public ResponseEntity<?> setPrinterState (
+            @RequestParam String printer_id
+    ){
+        return new ResponseEntity<>(adminService.updateStatePrinter(printer_id),HttpStatus.OK);
+    }
+    @PutMapping("/acceptPrintRequest")
+    public ResponseEntity<?> acceptPrintRequest (
+            @RequestParam String printer_id, @RequestParam String file_id
+    ){
+        return new ResponseEntity<>(adminService.acceptPrint(printer_id,file_id),HttpStatus.OK);
+    }
+
+    // status 0 dang cho  , status 1 la tu choi , status 2 la chap nhan
+//    @PutMapping("/setPrintStatus")
+//    public ResponseEntity<?> setPrintStatus(
+//            @RequestParam String printer_id ,
+//            @RequestParam String file_id ,
+//            @RequestParam Integer status
+//    ){
+//        return new ResponseEntity<>(adminService.updateStatussPrint(printer_id,file_id, status),HttpStatus.OK);
+//    }
 
 
 
