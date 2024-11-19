@@ -78,14 +78,13 @@ public class AdminController {
     }
 
     // status 0 dang cho  , status 1 la tu choi , status 2 la chap nhan
-//    @PutMapping("/setPrintStatus")
-//    public ResponseEntity<?> setPrintStatus(
-//            @RequestParam String printer_id ,
-//            @RequestParam String file_id ,
-//            @RequestParam Integer status
-//    ){
-//        return new ResponseEntity<>(adminService.updateStatussPrint(printer_id,file_id, status),HttpStatus.OK);
-//    }
+    @PutMapping("/setPrintStatus")
+    public ResponseEntity<?> refusePrintRequest(
+            @RequestParam String printer_id ,
+            @RequestParam String file_id
+    ){
+        return new ResponseEntity<>(adminService.refusePrint(printer_id,file_id, 1),HttpStatus.OK);
+    }
 
 
 
