@@ -230,9 +230,38 @@ END;
 DELIMITER ;
 
 
-select * from student WHERE id = '901234567';
-CALL UpdateNbOfPageLeft('901234567' , 100);
-select * from student WHERE id = '901234567';
-select * from print;
+DELIMITER //
+CREATE PROCEDURE UpdatePrinterState(p_printer_id VARCHAR(50))
+BEGIN
+    DECLARE current_state INT;
+    SELECT state INTO current_state
+    FROM printer
+    WHERE printer_id = p_printer_id;
+    IF current_state = 0 THEN
+        SET current_state = 1;
+    ELSEIF current_state = 1 THEN
+        SET current_state = 0;
+    END IF;
+    UPDATE printer
+    SET state = current_state
+    WHERE printer_id = p_printer_id;
+END;
+//
+DELIMITER ;
+DELIMITER //
+CREATE PROCEDURE UpdatePrintStatus(p_printer_id VARCHAR(50), p_file_id VARCHAR(50), p_status INT)
+BEGIN
+    UPDATE print
+    SET statuss = p_status
+    WHERE printer_id = p_printer_id AND file_id = p_file_id;
+    
+    select * from print WHERE printer_id = p_printer_id AND file_id = p_file_id;
+END;
+//
+DELIMITER ;
+
+
 select * from files;
-select * from printer;
+select * from print ;
+select * from student ;
+
