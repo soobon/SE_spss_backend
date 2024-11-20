@@ -36,7 +36,7 @@ public class adminServiceImpl implements AdminService {
     private PrintRepository printRepository ;
     private FileRepository fileRepository;
     private ModelMapper modelMapper;
-
+    private SPSSRepository spssRepository;
 
     public adminDTO  find_admin_information(String id){
         Admin admin = adminRepository.findAdminById(id);
@@ -153,8 +153,9 @@ public class adminServiceImpl implements AdminService {
             student.setNb_of_page_left(student.getNb_of_page_left()+num);
             studentRepository.save(student);
         }
-
+        spssRepository.save(newsemester);
                 return newsemester;
+
     }
     public static Date getCurrentSqlDate() {
         long currentTimeMillis = System.currentTimeMillis();

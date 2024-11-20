@@ -56,8 +56,9 @@ public class AdminController {
         return new ResponseEntity<>(adminService.insertNewPrinter(building,model,sqlDate),HttpStatus.OK);
     }
     @PostMapping("/new")
-    public ResponseEntity<?>newsemester(@RequestParam String semester
-    ,@RequestParam Integer numOfPaperDefault)
+    public ResponseEntity<?>newsemester(
+            @RequestParam String semester
+           ,@RequestParam Integer numOfPaperDefault)
     {
         return new ResponseEntity<>(adminService.reset(semester,numOfPaperDefault),
                 HttpStatus.OK);
@@ -82,8 +83,7 @@ public class AdminController {
     public ResponseEntity<?> refusePrintRequest(
             @RequestParam String printer_id ,
             @RequestParam String file_id
-    )
-    {
+    ){
         return new ResponseEntity<>(adminService.refusePrint(printer_id,file_id, 1),HttpStatus.OK);
     }
 
