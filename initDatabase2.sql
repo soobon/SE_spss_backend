@@ -264,4 +264,5 @@ DELIMITER ;
 select * from files;
 select * from print ;
 select * from student ;
+select * from printer;
 

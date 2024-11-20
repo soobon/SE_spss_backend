@@ -161,11 +161,10 @@ public class adminServiceImpl implements AdminService {
         return new Date(currentTimeMillis); // Tạo đối tượng java.sql.Date từ thời gian hiện tại
     }
 
-
     public printerDTO updateStatePrinter (String printer_id){
+        printerDTO printer = new printerDTO();
         List<Object[]>  res = printerRepository.UpdatePrinterState(printer_id);
         Object[] row = res.get(0);
-        printerDTO printer = new printerDTO();
         printer.setPrinter_id((String) row[0]);
         printer.setBuilding((String) row[1]);
         printer.setState((Integer) row[2]);
