@@ -45,6 +45,7 @@ public interface PrintRepository extends JpaRepository<Print, PrintKey> {
     @Query(value = "CALL countrequest0()", nativeQuery = true)
     List<Object[]> countrequest0();
 
+    List<Print> findAllByFile_Fileid(String file_id);
 
 
 

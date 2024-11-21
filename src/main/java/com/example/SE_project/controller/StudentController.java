@@ -1,6 +1,9 @@
 package com.example.SE_project.controller;
 
+import com.example.SE_project.dto.NewFileDTO;
+import com.example.SE_project.dto.SendRequestDTO;
 import com.example.SE_project.dto.StudentDTO;
+import com.example.SE_project.dto.requestDTO;
 import com.example.SE_project.entity.Student;
 import com.example.SE_project.service.StudentService;
 import lombok.AllArgsConstructor;
@@ -43,4 +46,26 @@ public class StudentController {
         return new ResponseEntity<>(studentService.getHistory(id),HttpStatus.OK);
     }
 
+    @PostMapping("/printRequest/{id}")
+    public ResponseEntity<?> sendPrintRequest(
+            @RequestBody SendRequestDTO sendRequestDTO,
+            @PathVariable String id
+    ){
+        requestDTO result = studentService.sendPrintRequest(sendRequestDTO,id);
+        if (result == null) return new ResponseEntity<>("Number of pages left are not enough, please buy more page!",HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(result,HttpStatus.OK);
+    }
+
+    @PostMapping("/newFile/{id}")
+    public ResponseEntity<?> addNewFile(@PathVariable String id,
+                                        @RequestBody NewFileDTO newFileDTO
+    ){
+        return new ResponseEntity<>(studentService.addNewFile(id, newFileDTO),HttpStatus.OK);
+    }
+
+    @DeleteMapping("/deleteFile/{file_id}")
+    public ResponseEntity<?> deleteFile(@PathVariable String file_id
+    ){
+        return new ResponseEntity<>(studentService.deleteFile(file_id),HttpStatus.OK);
+    }
 }

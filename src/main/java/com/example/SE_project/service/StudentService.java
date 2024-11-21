@@ -1,8 +1,6 @@
 package com.example.SE_project.service;
 
-import com.example.SE_project.dto.FileHistoryDTO;
-import com.example.SE_project.dto.StatisticDTO;
-import com.example.SE_project.dto.StudentDTO;
+import com.example.SE_project.dto.*;
 import com.example.SE_project.entity.File;
 import com.example.SE_project.entity.Student;
 
@@ -16,8 +14,14 @@ public interface StudentService {
 
     List<File> getFiles(String id);
 
-    List<FileHistoryDTO> getHistory(String id);
+    List<requestDTO> getHistory(String id);
 
     StatisticDTO getStatistic(String id,Integer month);
+
+    File addNewFile(String id, NewFileDTO newFileDTO);
+
+    String deleteFile(String file_id);
+
+    requestDTO sendPrintRequest(SendRequestDTO sendRequestDTO,String id);
 
 }
