@@ -13,6 +13,8 @@ public interface StudentRepository extends JpaRepository<Student,String> {
     @Query(value = "CALL UpdateNbOfPageLeft(:std_id, :page_add)", nativeQuery = true)
     List<Object[]> update_nb_of_page(@Param("std_id") String std_id,
                                     @Param("page_add") int page_add);
+    @Query(value = "CALL countstudent()", nativeQuery = true)
+    List<Object[]> countstudent();
 
 
 

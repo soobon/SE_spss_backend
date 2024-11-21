@@ -17,4 +17,5 @@ public class requestDTO {
     private String print_date;
     private String building;
     private String print_id ;
+    private String file_id;
 }

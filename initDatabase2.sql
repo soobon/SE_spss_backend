@@ -129,78 +129,88 @@ INSERT INTO spss (semester, nb_of_page_default, reset_date) VALUES
 ('2024', 100, '2024-06-01'),
 ('2027', 200, '2027-06-01');
 
+drop procedure if exists GetStudentPrintDetails;
 DELIMITER //
 CREATE PROCEDURE GetStudentPrintDetails()
 BEGIN
-    SELECT 
-        s.id, 
-        f.file_name, 
-        p.nb_of_page_used, 
-        p.statuss, 
-        p.print_date, 
+    SELECT
+        s.id,
+        f.file_name,
+        p.nb_of_page_used,
+        p.statuss,
+        p.print_date,
         pr.building,
-        pr.printer_id
-    FROM 
+        pr.printer_id,
+        f.file_id
+    FROM
         student s
-    JOIN 
+    JOIN
         files f ON s.id = f.id
-    JOIN 
+    JOIN
         print p ON p.file_id = f.file_id
-    JOIN 
-        printer pr ON pr.printer_id = p.printer_id;
+    JOIN
+        printer pr ON pr.printer_id = p.printer_id
+        order by p.statuss,p.print_date;
+
 END //
 DELIMITER ;
 
 -- CALL GetStudentPrintDetails();
-
+drop procedure if exists GetStudentPrintDetailsByPrinterId;
 DELIMITER //
 
 CREATE PROCEDURE GetStudentPrintDetailsByPrinterId(IN printerId VARCHAR(20))
 BEGIN
-    SELECT 
-        s.id, 
-        f.file_name, 
-        p.nb_of_page_used, 
-        p.statuss, 
-        p.print_date, 
+    SELECT
+        s.id,
+        f.file_name,
+        p.nb_of_page_used,
+        p.statuss,
+        p.print_date,
         pr.building,
-        pr.printer_id
-    FROM 
+        pr.printer_id,
+        f.file_id
+    FROM
         student s
-    JOIN 
+    JOIN
         files f ON s.id = f.id
-    JOIN 
+    JOIN
         print p ON p.file_id = f.file_id
-    JOIN 
+    JOIN
         printer pr ON pr.printer_id = p.printer_id
-    WHERE 
-        pr.printer_id = printerId;
+    WHERE
+        pr.printer_id = printerId
+        order by p.statuss,p.print_date;
 END //
 
 DELIMITER ;
 
+
+drop procedure if exists GetStudentPrintDetailsByStudentId;
 DELIMITER //
 
 CREATE PROCEDURE GetStudentPrintDetailsByStudentId(IN studentId VARCHAR(9))
 BEGIN
-    SELECT 
-        s.id, 
-        f.file_name, 
-        p.nb_of_page_used, 
-        p.statuss, 
-        p.print_date, 
+    SELECT
+        s.id,
+        f.file_name,
+        p.nb_of_page_used,
+        p.statuss,
+        p.print_date,
         pr.building,
-        pr.printer_id
-    FROM 
+        pr.printer_id,
+        f.file_id
+    FROM
         student s
-    JOIN 
+    JOIN
         files f ON s.id = f.id
-    JOIN 
+    JOIN
         print p ON p.file_id = f.file_id
-    JOIN 
+    JOIN
         printer pr ON pr.printer_id = p.printer_id
-    WHERE 
-        s.id = studentId;
+    WHERE
+        s.id = studentId
+        order by p.statuss, p.print_date;
 END //
 
 DELIMITER ;
@@ -245,6 +255,7 @@ BEGIN
     UPDATE printer
     SET state = current_state
     WHERE printer_id = p_printer_id;
+    select* from printer where printer_id=p_printer_id;
 END;
 //
 DELIMITER ;
@@ -259,10 +270,50 @@ BEGIN
 END;
 //
 DELIMITER ;
+DELIMITER //
+CREATE PROCEDURE GetPrinterById(in p_printer_id varchar(50))
+BEGIN
+    SELECT
+        *
+    FROM
+        printer p
+    where p_printer_id=p.printer_id;
+END //
+DELIMITER ;
+DELIMITER //
+CREATE PROCEDURE countprinter()
+BEGIN
+    SELECT
+        count(*)
+    FROM
+        printer p;
+END //
+DELIMITER ;
+DELIMITER //
+CREATE PROCEDURE countstudent()
+BEGIN
+    SELECT
+        count(*)
+    FROM
+		student;
+END //
+DELIMITER ;
+DELIMITER //
+CREATE PROCEDURE countrequest0()
+BEGIN
+    SELECT
+        count(*)
+    FROM
+        print
+        where statuss=0;
+END //
+DELIMITER ;
 
-
+select * from accounts;
+select * from adminn;
+select * from student;
 select * from files;
-select * from print ;
-select * from student ;
+select * from print;
+select * from spss;
 select * from printer;
 

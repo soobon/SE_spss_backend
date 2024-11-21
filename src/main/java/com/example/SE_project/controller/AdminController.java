@@ -29,6 +29,11 @@ public class AdminController {
     public ResponseEntity<?> getALLprinter(){
         return new ResponseEntity<>(adminService.get_all_printer() , HttpStatus.OK);
     }
+    @GetMapping("/getPrinterById")
+    public ResponseEntity<?> getprinter(@RequestParam String printer_id){
+        return new ResponseEntity<>(adminService.get_by_id(printer_id) , HttpStatus.OK);
+    }
+
 
     @GetMapping("/getAllPrintRequest")
     public ResponseEntity<?> getAllPrintRequest() {
@@ -43,6 +48,10 @@ public class AdminController {
     @GetMapping("/getAllRequestOnStudent/{std_id}")
     public ResponseEntity<?> getAllPrintRequestOnStudent(@PathVariable String std_id){
         return new ResponseEntity<>(adminService.get_all_print_request_by_student_id(std_id), HttpStatus.OK);
+    }
+    @GetMapping("/getOverall")
+    public ResponseEntity<?> getOverall(){
+        return new ResponseEntity<>(adminService.getOverall() , HttpStatus.OK);
     }
 
     @PostMapping("/insertNewPrinter")

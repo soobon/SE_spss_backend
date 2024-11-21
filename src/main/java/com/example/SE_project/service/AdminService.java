@@ -1,9 +1,10 @@
 package com.example.SE_project.service;
 
 import com.example.SE_project.dto.adminDTO;
+import com.example.SE_project.dto.overallDTO;
 import com.example.SE_project.dto.printerDTO;
 import com.example.SE_project.dto.requestDTO;
-import com.example.SE_project.entity.Print;
+import com.example.SE_project.entity.*;
 import com.example.SE_project.entity.Printer;
 import com.example.SE_project.entity.SPSS;
 
@@ -15,6 +16,8 @@ public interface AdminService {
     adminDTO find_admin_information (String id);
 
     List<printerDTO> get_all_printer ();
+
+    printerDTO get_by_id(String id);
 
     List<requestDTO> get_all_print_request();
 
@@ -33,5 +36,5 @@ public interface AdminService {
     public Print acceptPrint(String printer_id , String file_id );
     public Print refusePrint(String printer_id , String file_id , Integer status);
 
-
+    public overallDTO getOverall();
 }
