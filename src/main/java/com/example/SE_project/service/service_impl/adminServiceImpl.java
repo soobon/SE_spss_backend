@@ -1,6 +1,7 @@
 package com.example.SE_project.service.service_impl;
 
 import com.example.SE_project.dto.adminDTO;
+import com.example.SE_project.dto.overallDTO;
 import com.example.SE_project.dto.printerDTO;
 import com.example.SE_project.dto.requestDTO;
 import com.example.SE_project.entity.Admin;
@@ -32,7 +33,7 @@ public class adminServiceImpl implements AdminService {
     private AdminRepository adminRepository ;
     private StudentRepository studentRepository;
     private PrinterRepository printerRepository ;
-    //private SPSSRepository SPSSRepository;
+    private SPSSRepository SPSSRepository;
     private PrintRepository printRepository ;
     private FileRepository fileRepository;
     private ModelMapper modelMapper;
@@ -48,6 +49,19 @@ public class adminServiceImpl implements AdminService {
                 .map(printer -> modelMapper.map(printer, printerDTO.class))
                 .collect(Collectors.toList());
     }
+    public printerDTO get_by_id(String id){
+        List<Object[]> result = printerRepository.GetPrinterById(id);
+        Object[] row = result.get(0);
+        Printer printer = new Printer();
+        printer.setPrinter_id((String) row[0]);
+        printer.setBuilding((String) row[1]);
+        printer.setState((Integer) row[2]);
+        printer.setModel((String) row[3]);
+        printer.setImport_date((java.sql.Date) row[4]);
+        return modelMapper.map(printer , printerDTO.class);
+
+
+    }
 
 
     public List<requestDTO>  mapping_requestDTO(List<Object[]> res ){
@@ -60,7 +74,9 @@ public class adminServiceImpl implements AdminService {
             String printDate = row[4] != null ? row[4].toString() : null;
             String building = row[5] != null ? row[5].toString() : null ;
             String printer_id = row[6] != null ? row[6].toString() : null ;
-            requestDTO dto = new requestDTO(id,fileName,nbOfPageUsed,status,printDate , building , printer_id);
+            String file_id = row[7] != null ? row[7].toString() : null ;
+            Integer order_num = row[8] != null ? ((Number) row[8]).intValue() : null;
+                    requestDTO dto = new requestDTO(id,fileName,nbOfPageUsed,status,printDate , building , printer_id,file_id,order_num);
             requestDetails.add(dto);
         }
         return requestDetails;
@@ -140,21 +156,28 @@ public class adminServiceImpl implements AdminService {
 
     public SPSS reset(String semester, Integer num) {
         List<Integer> a = new ArrayList<>();
-        a.add(Integer.parseInt(semester.substring(2,4)));
-        a.add(Integer.parseInt(semester.substring(4,5)));
-        if(generateSemesterCodeBaseOnRealTime().get(0)<a.get(0))
-            return null; else
-                if(generateSemesterCodeBaseOnRealTime().get(0).equals(a.get(0))
-                      && generateSemesterCodeBaseOnRealTime().get(1)<a.get(1))  return null;
+        a.add(Integer.parseInt(semester.substring(2, 4)));
+        a.add(Integer.parseInt(semester.substring(4, 5)));
+        if (generateSemesterCodeBaseOnRealTime().get(0) < a.get(0))
+            return null;
+        else if (generateSemesterCodeBaseOnRealTime().get(0).equals(a.get(0))
+                && generateSemesterCodeBaseOnRealTime().get(1) < a.get(1)) return null;
         Date sqlDate = getCurrentSqlDate();
-                SPSS newsemester = new SPSS(semester,num,0, sqlDate);
+        SPSS tmp = SPSSRepository.findBySemester(semester);
+        if(tmp!=null)
+        return tmp;
+        else
+        {
+            SPSS newsemester = new SPSS(semester, num, 0, sqlDate);
+
         List<Student> allstudents = studentRepository.findAll();
-        for(Student student:allstudents){
-            student.setNb_of_page_left(student.getNb_of_page_left()+num);
+        for (Student student : allstudents) {
+            student.setNb_of_page_left(student.getNb_of_page_left() + num);
             studentRepository.save(student);
         }
         spssRepository.save(newsemester);
-                return newsemester;
+        return newsemester;
+    }
 
     }
     public static Date getCurrentSqlDate() {
@@ -174,12 +197,13 @@ public class adminServiceImpl implements AdminService {
         return printer;
     }
 
-    public Print refusePrint(String printer_id , String file_id , Integer status){
-        List<Object[]> res = printRepository.updatePrintStatus(printer_id, file_id , status);
+    public Print refusePrint(Integer order_num , String file_id , Integer status){
+        List<Object[]> res = printRepository.updatePrintStatus(order_num, file_id , status);
         Object[] row = res.get(0);
         Print  pr = new Print();
-        PrintKey pk = new PrintKey((String) row[0],(String) row[1]);
+        PrintKey pk = new PrintKey((Integer) row[8],(String) row[1]);
         pr.setPrintKey(pk);
+        pr.setPrinter(printerRepository.findById((String) row[0]).get()); // coi chung sai, TODO
         pr.setNb_of_page_used((Integer) row[2]);
         pr.setNb_of_copy((Integer) row[3]);
         pr.setPaper_size((String) row [4]);
@@ -188,18 +212,37 @@ public class adminServiceImpl implements AdminService {
         pr.setPrint_date((java.sql.Date) row[7]);
         return pr;
     }
-    public Print acceptPrint(String printer_id , String file_id ){
-        Print print = printRepository.findByPrintKey_FileIdAndPrintKey_PrinterId(file_id,printer_id);
+    public Print acceptPrint(/*String printer_id , */String file_id, Integer orderNum){
+        Print print = printRepository.findByPrintKey_FileIdAndPrintKey_OrderNum(file_id,orderNum);// chu y TODO
         File file = fileRepository.findFileByFileid(file_id);
-        Student student= file.getStudent();
-        student.setNb_of_page_left(student.getNb_of_page_left()- file.getNum_pages());
-        studentRepository.save(student);
-        print.setStatus(2);
-        Date sqlDate = getCurrentSqlDate();
-        print.setPrint_date(sqlDate);
-        printRepository.save(print);
+        if( print.getStatus()==0 ){
+            Student student= file.getStudent();
+
+            if (print.getNb_of_page_used() > student.getNb_of_page_left()) return print;
+
+            student.setNb_of_page_left(student.getNb_of_page_left()- print.getNb_of_page_used());
+            studentRepository.save(student);
+            print.setStatus(2);
+            Date sqlDate = getCurrentSqlDate();
+            print.setPrint_date(sqlDate);
+            printRepository.save(print);
+        }
         return print;
     }
+    public overallDTO getOverall(){
+        List<Object[]> student = studentRepository.countstudent();
+        List<Object[]> printer = printerRepository.countprinter();
+        List<Object[]> request = printRepository.countrequest0();
+        Object[] stu = student.get(0);
+        Object[] pr = printer.get(0);
+        Object[] re = request.get(0);
+        overallDTO overrall = new overallDTO((Long) pr[0],
+                (Long) stu[0],
+                (Long) re[0]
+                );
+        return overrall;
+
+    };
 
 
 }

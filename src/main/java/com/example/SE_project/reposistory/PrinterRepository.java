@@ -11,5 +11,9 @@ public interface PrinterRepository extends JpaRepository<Printer,String> {
 
     @Query(value = "CALL UpdatePrinterState(:printer_id)", nativeQuery = true)
     List<Object[]> UpdatePrinterState(@Param("printer_id") String printer_id);
+    @Query(value = "CALL GetPrinterById(:printer_id)", nativeQuery = true)
+    List<Object[]> GetPrinterById(@Param("printer_id") String printer_id);
+    @Query(value = "CALL countprinter()", nativeQuery = true)
+    List<Object[]> countprinter();
 
 }

@@ -29,6 +29,11 @@ public class AdminController {
     public ResponseEntity<?> getALLprinter(){
         return new ResponseEntity<>(adminService.get_all_printer() , HttpStatus.OK);
     }
+    @GetMapping("/getPrinterById")
+    public ResponseEntity<?> getprinter(@RequestParam String printer_id){
+        return new ResponseEntity<>(adminService.get_by_id(printer_id) , HttpStatus.OK);
+    }
+
 
     @GetMapping("/getAllPrintRequest")
     public ResponseEntity<?> getAllPrintRequest() {
@@ -43,6 +48,10 @@ public class AdminController {
     @GetMapping("/getAllRequestOnStudent/{std_id}")
     public ResponseEntity<?> getAllPrintRequestOnStudent(@PathVariable String std_id){
         return new ResponseEntity<>(adminService.get_all_print_request_by_student_id(std_id), HttpStatus.OK);
+    }
+    @GetMapping("/getOverall")
+    public ResponseEntity<?> getOverall(){
+        return new ResponseEntity<>(adminService.getOverall() , HttpStatus.OK);
     }
 
     @PostMapping("/insertNewPrinter")
@@ -73,18 +82,18 @@ public class AdminController {
     }
     @PutMapping("/acceptPrintRequest")
     public ResponseEntity<?> acceptPrintRequest (
-            @RequestParam String printer_id, @RequestParam String file_id
+            /*@RequestParam String printer_id,*/ @RequestParam String file_id, @RequestParam Integer orderNum
     ){
-        return new ResponseEntity<>(adminService.acceptPrint(printer_id,file_id),HttpStatus.OK);
+        return new ResponseEntity<>(adminService.acceptPrint(/*printer_id,*/file_id,orderNum),HttpStatus.OK);
     }
 
     // status 0 dang cho  , status 1 la tu choi , status 2 la chap nhan
     @PutMapping("/refusePrintRequest")
     public ResponseEntity<?> refusePrintRequest(
-            @RequestParam String printer_id ,
+            @RequestParam Integer order_num ,
             @RequestParam String file_id
     ){
-        return new ResponseEntity<>(adminService.refusePrint(printer_id,file_id, 1),HttpStatus.OK);
+        return new ResponseEntity<>(adminService.refusePrint(order_num,file_id, 1),HttpStatus.OK);
     }
 
 

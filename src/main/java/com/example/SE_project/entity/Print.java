@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +15,7 @@ import java.sql.Date;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "print")
 public class Print {
 
@@ -39,7 +41,6 @@ public class Print {
     private Integer one_or_two_side;
 
     @ManyToOne
-    @MapsId("printerId")
     @JoinColumn(name = "printer_id", columnDefinition = "char(9) check (printer_id like '_________')")
     @JsonIgnore
     private Printer printer;
@@ -48,8 +49,9 @@ public class Print {
     @MapsId("fileId")
     @JoinColumn(name = "file_id", columnDefinition = "varchar(100)")
     private File file;
+
     @Column(name = "statuss",
             columnDefinition = "int check (statuss = 0 OR statuss = 1 OR statuss = 0)"
     )
-        private int status;
+    private int status;
 }

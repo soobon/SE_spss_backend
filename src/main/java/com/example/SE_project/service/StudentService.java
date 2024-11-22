@@ -1,23 +1,27 @@
-//package com.example.SE_project.service;
-//
-//import com.example.SE_project.dto.FileHistoryDTO;
-//import com.example.SE_project.dto.StatisticDTO;
-//import com.example.SE_project.dto.StudentDTO;
-//import com.example.SE_project.entity.File;
-//import com.example.SE_project.entity.Student;
-//
-//import java.util.List;
-//
-//public interface StudentService {
-//
-//    List<StudentDTO> allStudents();
-//
-//    StudentDTO getInfo(Integer id);
-//
-//    List<File> getFiles(Integer id);
-//
-//    List<FileHistoryDTO> getHistory(Integer id);
-//
-//    StatisticDTO getStatistic(Integer id,Integer month);
-//
-//}
+package com.example.SE_project.service;
+
+import com.example.SE_project.dto.*;
+import com.example.SE_project.entity.File;
+import com.example.SE_project.entity.Student;
+
+import java.util.List;
+
+public interface StudentService {
+
+    List<StudentDTO> allStudents();
+
+    StudentDTO getInfo(String id);
+
+    List<File> getFiles(String id);
+
+    List<requestDTO> getHistory(String id);
+
+    StatisticDTO getStatistic(String id,Integer month);
+
+    File addNewFile(String id, NewFileDTO newFileDTO);
+
+    String deleteFile(String file_id);
+
+    requestDTO sendPrintRequest(SendRequestDTO sendRequestDTO,String id);
+
+}
