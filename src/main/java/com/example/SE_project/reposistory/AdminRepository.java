@@ -22,7 +22,7 @@ public interface AdminRepository extends JpaRepository<Admin, String> {
     @Query(value = "CALL  GetStudentPrintDetailsByStudentId (:student_id)", nativeQuery = true)
     List<Object[]> GetStudentPrintDetailsByStudentId (@Param("student_id") String student_id);
 
-    @Query(value = "CALL InsertPrinter(:building, :model, :imp_date)", nativeQuery = true)
+    @Query(value = "CALL InsertPrintertet(:building, :model, :imp_date)", nativeQuery = true)
     List<Object[]> insertNewPrinter(@Param("building") String building,
                                     @Param("model") String model,
                                     @Param("imp_date") java.sql.Date impDate);

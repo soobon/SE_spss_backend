@@ -75,7 +75,8 @@ public class adminServiceImpl implements AdminService {
             String building = row[5] != null ? row[5].toString() : null ;
             String printer_id = row[6] != null ? row[6].toString() : null ;
             String file_id = row[7] != null ? row[7].toString() : null ;
-            requestDTO dto = new requestDTO(id,fileName,nbOfPageUsed,status,printDate , building , printer_id,file_id);
+            Integer order_num = row[8] != null ? ((Number) row[8]).intValue() : null;
+                    requestDTO dto = new requestDTO(id,fileName,nbOfPageUsed,status,printDate , building , printer_id,file_id,order_num);
             requestDetails.add(dto);
         }
         return requestDetails;
@@ -196,8 +197,8 @@ public class adminServiceImpl implements AdminService {
         return printer;
     }
 
-    public Print refusePrint(String printer_id , String file_id , Integer status){
-        List<Object[]> res = printRepository.updatePrintStatus(printer_id, file_id , status);
+    public Print refusePrint(Integer order_num , String file_id , Integer status){
+        List<Object[]> res = printRepository.updatePrintStatus(order_num, file_id , status);
         Object[] row = res.get(0);
         Print  pr = new Print();
         PrintKey pk = new PrintKey((Integer) row[8],(String) row[1]);
@@ -214,14 +215,17 @@ public class adminServiceImpl implements AdminService {
     public Print acceptPrint(/*String printer_id , */String file_id, Integer orderNum){
         Print print = printRepository.findByPrintKey_FileIdAndPrintKey_OrderNum(file_id,orderNum);// chu y TODO
         File file = fileRepository.findFileByFileid(file_id);
-        if(print.getStatus()==0){
-        Student student= file.getStudent();
-        student.setNb_of_page_left(student.getNb_of_page_left()- print.getNb_of_page_used());
-        studentRepository.save(student);
-        print.setStatus(2);
-        Date sqlDate = getCurrentSqlDate();
-        print.setPrint_date(sqlDate);
-        printRepository.save(print);
+        if( print.getStatus()==0 ){
+            Student student= file.getStudent();
+
+            if (print.getNb_of_page_used() > student.getNb_of_page_left()) return print;
+
+            student.setNb_of_page_left(student.getNb_of_page_left()- print.getNb_of_page_used());
+            studentRepository.save(student);
+            print.setStatus(2);
+            Date sqlDate = getCurrentSqlDate();
+            print.setPrint_date(sqlDate);
+            printRepository.save(print);
         }
         return print;
     }

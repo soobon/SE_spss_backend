@@ -34,7 +34,7 @@ public interface AdminService {
     public printerDTO updateStatePrinter (String printer_id);
 
     public Print acceptPrint(/*String printer_id, */ String file_id , Integer orderNum);
-    public Print refusePrint(String printer_id , String file_id , Integer status);
+    public Print refusePrint(Integer order_num , String file_id , Integer status);
 
     public overallDTO getOverall();
 }

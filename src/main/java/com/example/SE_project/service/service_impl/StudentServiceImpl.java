@@ -85,6 +85,7 @@ public class StudentServiceImpl implements StudentService {
                                     .building(printerRepository.findById(p.getPrinter().getPrinter_id()).get().getBuilding())
                                     .print_id(p.getPrinter().getPrinter_id())
                                     .file_id(file.getFileid())
+                                    .order_num(p.getPrintKey().getOrderNum())
                                     .build()
                     )
             );
@@ -154,7 +155,7 @@ public class StudentServiceImpl implements StudentService {
                 () -> new UserNotFound("File not found by Id:" + sendRequestDTO.getFile_id())
         );
 
-        PrintKey printKey = new PrintKey(-1, file.getFileid());
+        PrintKey printKey = new PrintKey(0, file.getFileid());
 
         //now
         LocalDate localDate = LocalDate.now();
@@ -194,7 +195,8 @@ public class StudentServiceImpl implements StudentService {
                 .build();
         printRepository.save(print);
 
-        printRepository.updateOrderNum();
+        List<Object[]> newPrints = printRepository.updateOrderNum();
+        Object[] newPrint = newPrints.get(0);
 
         return requestDTO.builder()
                 .id(id)
@@ -205,6 +207,7 @@ public class StudentServiceImpl implements StudentService {
                 .building(printer.getBuilding())
                 .print_id(printer.getPrinter_id())
                 .file_id(file.getFileid())
+                .order_num((Integer) newPrint[8])
                 .build();
     }
 }

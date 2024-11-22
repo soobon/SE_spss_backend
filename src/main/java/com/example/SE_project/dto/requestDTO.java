@@ -16,4 +16,5 @@ public class requestDTO {
     private String building;
     private String print_id ;
     private String file_id;
+    private Integer order_num;
 }

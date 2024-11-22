@@ -90,10 +90,10 @@ public class AdminController {
     // status 0 dang cho  , status 1 la tu choi , status 2 la chap nhan
     @PutMapping("/refusePrintRequest")
     public ResponseEntity<?> refusePrintRequest(
-            @RequestParam String printer_id ,
+            @RequestParam Integer order_num ,
             @RequestParam String file_id
     ){
-        return new ResponseEntity<>(adminService.refusePrint(printer_id,file_id, 1),HttpStatus.OK);
+        return new ResponseEntity<>(adminService.refusePrint(order_num,file_id, 1),HttpStatus.OK);
     }
 
 

@@ -40,8 +40,8 @@ public interface PrintRepository extends JpaRepository<Print, PrintKey> {
             @Param("month") Integer month
     );
 
-    @Query(value = "CALL UpdatePrintStatus(:p_printer_id ,:p_file_id , :p_status)", nativeQuery = true)
-    List<Object[]> updatePrintStatus(@Param("p_printer_id") String p_printer_id,
+    @Query(value = "CALL UpdatePrintStatus(:p_order_num ,:p_file_id , :p_status)", nativeQuery = true)
+    List<Object[]> updatePrintStatus(@Param("p_order_num") Integer p_order_num,
                                      @Param("p_file_id") String p_file_id ,
                                      @Param ("p_status") Integer p_status);
     @Query(value = "CALL countrequest0()", nativeQuery = true)
