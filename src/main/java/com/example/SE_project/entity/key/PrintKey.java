@@ -12,8 +12,10 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PrintKey implements Serializable {
-    @Column(name = "printer_id")
-    private String printerId;
+//    @Column(name = "printer_id")
+//    private String printerId;
+    @Column(name = "order_num")
+    private Integer orderNum;
     @Column(name = "file_id")
     private String fileId;
 }

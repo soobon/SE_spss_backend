@@ -154,7 +154,7 @@ public class StudentServiceImpl implements StudentService {
                 () -> new UserNotFound("File not found by Id:" + sendRequestDTO.getFile_id())
         );
 
-        PrintKey printKey = new PrintKey(sendRequestDTO.getPrinter_id(), file.getFileid());
+        PrintKey printKey = new PrintKey(-1, file.getFileid());
 
         //now
         LocalDate localDate = LocalDate.now();
@@ -193,6 +193,9 @@ public class StudentServiceImpl implements StudentService {
                 .nb_of_page_used(nb_of_page_in_print)
                 .build();
         printRepository.save(print);
+
+        printRepository.updateOrderNum();
+
         return requestDTO.builder()
                 .id(id)
                 .file_name(file.getFile_name())

@@ -82,9 +82,9 @@ public class AdminController {
     }
     @PutMapping("/acceptPrintRequest")
     public ResponseEntity<?> acceptPrintRequest (
-            @RequestParam String printer_id, @RequestParam String file_id
+            /*@RequestParam String printer_id,*/ @RequestParam String file_id, @RequestParam Integer orderNum
     ){
-        return new ResponseEntity<>(adminService.acceptPrint(printer_id,file_id),HttpStatus.OK);
+        return new ResponseEntity<>(adminService.acceptPrint(/*printer_id,*/file_id,orderNum),HttpStatus.OK);
     }
 
     // status 0 dang cho  , status 1 la tu choi , status 2 la chap nhan

@@ -11,7 +11,9 @@ import java.util.List;
 
 
 public interface PrintRepository extends JpaRepository<Print, PrintKey> {
-    Print findByPrintKey_FileIdAndPrintKey_PrinterId(String fileId, String printerId);
+//    Print findByPrintKey_FileIdAndPrintKey_PrinterId(String fileId, String printerId);
+
+    Print findByPrintKey_FileIdAndPrintKey_OrderNum(String fileId, Integer orderNum);
 
     @Query(value = "SELECT SUM(nb_of_page_used) " +
             "FROM print P " +
@@ -47,7 +49,8 @@ public interface PrintRepository extends JpaRepository<Print, PrintKey> {
 
     List<Print> findAllByFile_Fileid(String file_id);
 
-
+    @Query(value = "CALL UpdateOrderNum()", nativeQuery = true)
+    List<Object[]> updateOrderNum();
 
 
 }

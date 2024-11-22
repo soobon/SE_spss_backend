@@ -200,8 +200,9 @@ public class adminServiceImpl implements AdminService {
         List<Object[]> res = printRepository.updatePrintStatus(printer_id, file_id , status);
         Object[] row = res.get(0);
         Print  pr = new Print();
-        PrintKey pk = new PrintKey((String) row[0],(String) row[1]);
+        PrintKey pk = new PrintKey((Integer) row[8],(String) row[1]);
         pr.setPrintKey(pk);
+        pr.setPrinter(printerRepository.findById((String) row[0]).get()); // coi chung sai, TODO
         pr.setNb_of_page_used((Integer) row[2]);
         pr.setNb_of_copy((Integer) row[3]);
         pr.setPaper_size((String) row [4]);
@@ -210,8 +211,8 @@ public class adminServiceImpl implements AdminService {
         pr.setPrint_date((java.sql.Date) row[7]);
         return pr;
     }
-    public Print acceptPrint(String printer_id , String file_id ){
-        Print print = printRepository.findByPrintKey_FileIdAndPrintKey_PrinterId(file_id,printer_id);
+    public Print acceptPrint(/*String printer_id , */String file_id, Integer orderNum){
+        Print print = printRepository.findByPrintKey_FileIdAndPrintKey_OrderNum(file_id,orderNum);// chu y TODO
         File file = fileRepository.findFileByFileid(file_id);
         if(print.getStatus()==0){
         Student student= file.getStudent();
