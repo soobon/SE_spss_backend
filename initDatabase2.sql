@@ -50,8 +50,8 @@ CREATE TABLE print (
                        print_date date not null,
                        order_num int default 0,
                        PRIMARY KEY (file_id,order_num),
-                       FOREIGN KEY (printer_id) REFERENCES printer(printer_id),
-                       FOREIGN KEY (file_id) REFERENCES files(file_id)
+                       FOREIGN KEY (printer_id) REFERENCES printer(printer_id) ,
+                       FOREIGN KEY (file_id) REFERENCES files(file_id) on delete cascade on update cascade
 );
 
 create table spss (

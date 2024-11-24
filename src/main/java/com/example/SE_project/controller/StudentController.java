@@ -6,10 +6,13 @@ import com.example.SE_project.dto.StudentDTO;
 import com.example.SE_project.dto.requestDTO;
 import com.example.SE_project.entity.Student;
 import com.example.SE_project.service.StudentService;
+import com.example.SE_project.service.storageService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -68,4 +71,27 @@ public class StudentController {
     ){
         return new ResponseEntity<>(studentService.deleteFile(file_id),HttpStatus.OK);
     }
+    @Autowired
+    private storageService storageService ;
+    @PostMapping("/addRealFile")
+    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file,
+                                        @RequestParam("file_id") String fileId) {
+        try {
+            String response = storageService.uploadFile(file, fileId);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("File upload failed: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/downloadFile/{file_id}")
+    public ResponseEntity<?> downloadFile(@PathVariable("file_id") String fileId) {
+        try {
+            byte[] fileData = storageService.downloadFile(fileId);
+            return ResponseEntity.ok(fileData); // Return the file data as a byte array
+        } catch (Exception e) {
+            return new ResponseEntity<>("File download failed: " + e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
 }

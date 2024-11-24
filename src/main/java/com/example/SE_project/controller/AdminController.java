@@ -93,6 +93,7 @@ public class AdminController {
             @RequestParam Integer order_num ,
             @RequestParam String file_id
     ){
+
         return new ResponseEntity<>(adminService.refusePrint(order_num,file_id, 1),HttpStatus.OK);
     }
 
