@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 @RequestMapping("/student")
@@ -84,11 +86,24 @@ public class StudentController {
         }
     }
 
+    public static void saveFile(byte[] fileData, String filePath) throws IOException {
+        // Tạo một FileOutputStream để ghi byte array vào tệp
+        try (FileOutputStream fos = new FileOutputStream(filePath)) {
+            fos.write(fileData);  // Ghi byte array vào tệp
+            System.out.println("File saved to: " + filePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new IOException("Error saving file", e);
+        }
+    }
     @GetMapping("/downloadFile/{file_id}")
     public ResponseEntity<?> downloadFile(@PathVariable("file_id") String fileId) {
         try {
             byte[] fileData = storageService.downloadFile(fileId);
-            return ResponseEntity.ok(fileData); // Return the file data as a byte array
+            String fileName = fileId + ".pdf";
+            String filePath = "E://se_file/" + fileName;
+            saveFile(fileData, filePath);
+            return ResponseEntity.ok("File downloaded successfully.");
         } catch (Exception e) {
             return new ResponseEntity<>("File download failed: " + e.getMessage(), HttpStatus.NOT_FOUND);
         }

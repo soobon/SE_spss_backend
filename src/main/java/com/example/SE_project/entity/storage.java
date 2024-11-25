@@ -17,6 +17,6 @@ public class storage {
     private String fileid;
 
     @Lob
-    @Column(name = "filedata" )
+    @Column(name = "filedata" , length =  100000)
     private byte[] filedata;
 }
