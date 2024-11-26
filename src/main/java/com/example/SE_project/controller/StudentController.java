@@ -63,9 +63,11 @@ public class StudentController {
 
     @PostMapping("/newFile/{id}")
     public ResponseEntity<?> addNewFile(@PathVariable String id,
-                                        @RequestBody NewFileDTO newFileDTO
+                                        @RequestParam("numpages") int num_pages,
+                                        @RequestParam("file_name") String filename ,
+                                        @RequestParam("file") MultipartFile file
     ){
-        return new ResponseEntity<>(studentService.addNewFile(id, newFileDTO),HttpStatus.OK);
+        return new ResponseEntity<>(studentService.addNewFile(id, new NewFileDTO(filename,num_pages) , file),HttpStatus.OK);
     }
 
     @DeleteMapping("/deleteFile/{file_id}")
@@ -103,7 +105,7 @@ public class StudentController {
             String fileName = fileId + ".pdf";
             String filePath = "E://se_file/" + fileName;
             saveFile(fileData, filePath);
-            return ResponseEntity.ok("File downloaded successfully.");
+            return ResponseEntity.ok("oke");
         } catch (Exception e) {
             return new ResponseEntity<>("File download failed: " + e.getMessage(), HttpStatus.NOT_FOUND);
         }

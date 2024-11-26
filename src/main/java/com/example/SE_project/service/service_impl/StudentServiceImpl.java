@@ -12,10 +12,14 @@ import com.example.SE_project.reposistory.PrintRepository;
 import com.example.SE_project.reposistory.PrinterRepository;
 import com.example.SE_project.reposistory.StudentRepository;
 import com.example.SE_project.service.StudentService;
+import com.example.SE_project.service.storageService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -106,9 +110,10 @@ public class StudentServiceImpl implements StudentService {
                 printRepository.findPrintCountForSpecificMonth(id, month)
         );
     }
+    private storageService storageService;
 
     @Override
-    public File addNewFile(String id, NewFileDTO newFileDTO) {
+    public File addNewFile(String id, NewFileDTO newFileDTO , MultipartFile f ) {
         //generate ID for file
         StringBuilder file_id = null;
         while (true) {
@@ -135,7 +140,11 @@ public class StudentServiceImpl implements StudentService {
                 .num_pages(newFileDTO.getNum_pages())
                 .student(student)
                 .build();
-
+        try {
+            storageService.uploadFile(f,file_id.toString());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         return fileRepository.save(file);
     }
 
