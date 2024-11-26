@@ -2,6 +2,7 @@ package com.example.SE_project.controller;
 
 import com.example.SE_project.dto.adminDTO;
 import com.example.SE_project.service.AdminService;
+import com.example.SE_project.service.storageService;
 import lombok.AllArgsConstructor;
 import org.springframework.format.Printer;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -95,6 +96,17 @@ public class AdminController {
     ){
 
         return new ResponseEntity<>(adminService.refusePrint(order_num,file_id, 1),HttpStatus.OK);
+    }
+    private storageService storageService ;
+
+    @GetMapping("/downloadFile/{file_id}")
+    public ResponseEntity<?> downloadFile(@PathVariable("file_id") String fileId) {
+        try {
+            byte[] fileData = storageService.downloadFile(fileId);
+            return new ResponseEntity<>(fileData , HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("File download failed: " + e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
 

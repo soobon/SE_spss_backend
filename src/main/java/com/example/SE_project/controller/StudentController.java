@@ -98,17 +98,6 @@ public class StudentController {
             throw new IOException("Error saving file", e);
         }
     }
-    @GetMapping("/downloadFile/{file_id}")
-    public ResponseEntity<?> downloadFile(@PathVariable("file_id") String fileId) {
-        try {
-            byte[] fileData = storageService.downloadFile(fileId);
-            String fileName = fileId + ".pdf";
-            String filePath = "E://se_file/" + fileName;
-            saveFile(fileData, filePath);
-            return ResponseEntity.ok("oke");
-        } catch (Exception e) {
-            return new ResponseEntity<>("File download failed: " + e.getMessage(), HttpStatus.NOT_FOUND);
-        }
-    }
+
 
 }
