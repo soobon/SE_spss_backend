@@ -158,7 +158,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public requestDTO sendPrintRequest(SendRequestDTO sendRequestDTO, String id) {
+    public requestDTO sendPrintRequest(SendRequestDTO sendRequestDTO, String id, Integer start_page, Integer end_page, List<Integer> list_page) {
         File file = fileRepository.findById(sendRequestDTO.getFile_id())
                         .orElseThrow(
                 () -> new UserNotFound("File not found by Id:" + sendRequestDTO.getFile_id())
@@ -171,7 +171,15 @@ public class StudentServiceImpl implements StudentService {
         //java.sql.Date
         Date sqlDate = Date.valueOf(localDate);
 
-        Integer nb_of_page_in_print = file.getNum_pages();
+        //tinh so trang
+        Integer nb_of_page_in_print = 0;
+        if (start_page != null && end_page != null){// neu co start + end
+            nb_of_page_in_print = end_page-start_page+1;
+        }else if (!list_page.isEmpty()){// neu list page khong Empty
+            nb_of_page_in_print = list_page.size();
+        }else{//mac dinh se in ra het tat ca trong file
+            nb_of_page_in_print = file.getNum_pages();
+        }
 
         if (sendRequestDTO.getPaper_size().equals("A3")) nb_of_page_in_print *= 2;
 
@@ -218,5 +226,17 @@ public class StudentServiceImpl implements StudentService {
                 .file_id(file.getFileid())
                 .order_num((Integer) newPrint[8])
                 .build();
+    }
+
+    @Override
+    public String deletePrintRequest(PrintKey printKey) {
+        Print deletePrint = printRepository.findById(printKey).orElseThrow(
+                () -> new UserNotFound("Khong the tim thay Print")
+        );
+        if (deletePrint.getStatus() != 0){
+            return "Khong the xoa ban in da duoc duyet nay!";
+        }
+        printRepository.deleteById(printKey);
+        return "Xoa ban in thanh cong";
     }
 }

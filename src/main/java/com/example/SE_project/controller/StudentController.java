@@ -5,6 +5,8 @@ import com.example.SE_project.dto.SendRequestDTO;
 import com.example.SE_project.dto.StudentDTO;
 import com.example.SE_project.dto.requestDTO;
 import com.example.SE_project.entity.Student;
+import com.example.SE_project.entity.key.PrintKey;
+import com.example.SE_project.service.AdminService;
 import com.example.SE_project.service.StudentService;
 import com.example.SE_project.service.storageService;
 import lombok.AllArgsConstructor;
@@ -25,6 +27,8 @@ import java.util.List;
 public class StudentController {
 
     private StudentService studentService ;
+
+    private AdminService adminService;
 
     @GetMapping("/all")
     public ResponseEntity<List<StudentDTO>> allStudent(){
@@ -53,10 +57,24 @@ public class StudentController {
 
     @PostMapping("/printRequest/{id}")
     public ResponseEntity<?> sendPrintRequest(
-            @RequestBody SendRequestDTO sendRequestDTO,
+            @RequestParam String printer_id,
+            @RequestParam String file_id,
+            @RequestParam String paper_size,
+            @RequestParam Integer one_or_two_side,
+            @RequestParam Integer nb_of_copy,
+            @RequestParam(name = "start_page") Integer start_page,
+            @RequestParam(name = "end_page") Integer end_page,
+            @RequestParam(name = "list_page") List<Integer> page_list,
             @PathVariable String id
     ){
-        requestDTO result = studentService.sendPrintRequest(sendRequestDTO,id);
+        SendRequestDTO sendRequestDTO = SendRequestDTO.builder()
+                .printer_id(printer_id)
+                .file_id(file_id)
+                .paper_size(paper_size)
+                .one_or_two_side(one_or_two_side)
+                .nb_of_copy(nb_of_copy)
+                .build();
+        requestDTO result = studentService.sendPrintRequest(sendRequestDTO,id,start_page,end_page,page_list);
         if (result == null) return new ResponseEntity<>("Number of pages left are not enough, please buy more page!",HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(result,HttpStatus.OK);
     }
@@ -75,7 +93,7 @@ public class StudentController {
     ){
         return new ResponseEntity<>(studentService.deleteFile(file_id),HttpStatus.OK);
     }
-    @Autowired
+
     private storageService storageService ;
     @PostMapping("/addRealFile")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file,
@@ -99,5 +117,13 @@ public class StudentController {
         }
     }
 
+    @DeleteMapping("/deleteRequest")
+    public ResponseEntity<?> deleteRequest(
+            @RequestParam(name = "order_num") Integer orderNum,
+            @RequestParam(name = "file_id") String file_id
+    ){
+        return new ResponseEntity<>(studentService.deletePrintRequest(new PrintKey(orderNum, file_id)),HttpStatus.OK);
+    }
 
+    
 }
