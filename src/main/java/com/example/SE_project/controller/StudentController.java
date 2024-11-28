@@ -40,9 +40,14 @@ public class StudentController {
         return new ResponseEntity<>(studentService.getInfo(id),HttpStatus.OK);
     }
 
-    @GetMapping("/statistic/{id}/{month}")
-    public ResponseEntity<?> getStatistic(@PathVariable String id,@PathVariable Integer month){
-        return new ResponseEntity<>(studentService.getStatistic(id,month),HttpStatus.OK);
+//    @GetMapping("/statistic/{id}/{month}")
+//    public ResponseEntity<?> getStatistic(@PathVariable String id,@PathVariable Integer month){
+//        return new ResponseEntity<>(studentService.getStatistic(id,month),HttpStatus.OK);
+//    }
+
+    @GetMapping("/statistic/{id}/{year}")
+    public ResponseEntity<?> getStatistic(@PathVariable String id,@PathVariable Integer year){
+        return new ResponseEntity<>(studentService.getStatistic(id,year),HttpStatus.OK);
     }
 
     @GetMapping("/file_list/{id}")
@@ -125,5 +130,9 @@ public class StudentController {
         return new ResponseEntity<>(studentService.deletePrintRequest(new PrintKey(orderNum, file_id)),HttpStatus.OK);
     }
 
-    
+    @GetMapping("/getAllPrinter")
+    public ResponseEntity<?> getAllPrinter(){
+        return new ResponseEntity<>(adminService.get_all_printer(),HttpStatus.OK);
+    }
+
 }

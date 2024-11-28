@@ -98,16 +98,36 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public StatisticDTO getStatistic(String id, Integer month) {
+    public StatisticDTO getStatistic(String id, Integer year) {
         Student student = studentRepository.findById(id).orElseThrow(
                 () -> new UserNotFound("Can't find Student by ID: " + id)
         );
 
+        List<MonthDTO> monthDTOS = new ArrayList<>();
+        for (int month = 1; month<=12; month++){
+            MonthDTO monthTemp = MonthDTO.builder()
+                    .month(String.valueOf(month))
+                    .printing_count_for_this_month(printRepository.findPrintCountForSpecificMonth(id, month, year))
+                    .build();
+            monthDTOS.add(monthTemp);
+        }
+        Integer printing_count = 0;
+        for (File file : student.getFile_list()){
+            for (Print print: file.getPrint_list()){
+                if (print.getStatus() == 2) printing_count++;
+            }
+        }
+        Integer totalPages = printRepository.findTotalPagesUsedByStudent(id);
+        if (totalPages == null) totalPages = 0;
+
         return new StatisticDTO(
                 student.getNb_of_page_left(),
-                printRepository.findTotalPagesUsedByStudent(id),
-                student.getFile_list().stream().mapToInt(p -> p.getPrint_list().size()).sum(),
-                printRepository.findPrintCountForSpecificMonth(id, month)
+//                printRepository.findTotalPagesUsedByStudent(id),
+//                student.getFile_list().stream().mapToInt(p -> p.getPrint_list().size()).sum(),
+//                printRepository.findPrintCountForSpecificMonth(id, month)
+                totalPages,
+                printing_count,
+                monthDTOS
         );
     }
     private storageService storageService;

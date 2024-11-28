@@ -21,7 +21,7 @@ public interface PrintRepository extends JpaRepository<Print, PrintKey> {
             "FROM student S " +
             "JOIN files F ON S.id = F.id " +
             "WHERE S.id = :studentId) T " +
-            "ON P.file_id = T.file_id", nativeQuery = true)
+            "ON P.file_id = T.file_id WHERE P.statuss = 2", nativeQuery = true)
     Integer findTotalPagesUsedByStudent(@Param("studentId") String studentId);
 
     @Query(value = """
@@ -33,11 +33,12 @@ public interface PrintRepository extends JpaRepository<Print, PrintKey> {
             JOIN files f ON s.id = f.id
             WHERE s.id = :studentId
         ) t ON p.file_id = t.file_id
-        WHERE MONTH(p.print_date) = :month
+        WHERE MONTH(p.print_date) = :month AND YEAR(p.print_date) =:year AND p.statuss = 2
     """, nativeQuery = true)
     Integer findPrintCountForSpecificMonth(
             @Param("studentId") String studentId,
-            @Param("month") Integer month
+            @Param("month") Integer month,
+            @Param("year") Integer year
     );
 
     @Query(value = "CALL UpdatePrintStatus(:p_order_num ,:p_file_id , :p_status)", nativeQuery = true)

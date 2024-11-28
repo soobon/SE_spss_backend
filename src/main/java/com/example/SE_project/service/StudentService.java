@@ -18,7 +18,7 @@ public interface StudentService {
 
     List<requestDTO> getHistory(String id);
 
-    StatisticDTO getStatistic(String id,Integer month);
+    StatisticDTO getStatistic(String id,Integer year);
 
     File addNewFile(String id, NewFileDTO newFileDTO , MultipartFile f );
     String deleteFile(String file_id);
