@@ -1,6 +1,7 @@
 package com.example.SE_project.reposistory;
 
 import com.example.SE_project.dto.requestDTO;
+import com.example.SE_project.entity.Account;
 import com.example.SE_project.entity.Admin;
 import com.example.SE_project.entity.Printer;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,6 +14,8 @@ import java.util.List;
 
 public interface AdminRepository extends JpaRepository<Admin, String> {
     Admin findAdminById(String id);
+
+    Admin findByAccount(Account account);
 
     @Query(value = "CALL GetStudentPrintDetails()", nativeQuery = true)
     List<Object[]> getStudentPrintDetails();

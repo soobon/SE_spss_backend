@@ -7,6 +7,8 @@ import com.example.SE_project.entity.Account;
 import com.example.SE_project.entity.enum_class.Role;
 import com.example.SE_project.exception.UserNotFound;
 import com.example.SE_project.reposistory.AccountRepository;
+import com.example.SE_project.reposistory.AdminRepository;
+import com.example.SE_project.reposistory.StudentRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,6 +32,10 @@ public class AuthService {
     private JwtService jwtService;
 
     private AuthenticationManager authenticationManager;
+
+    private AdminRepository adminRepository;
+
+    private StudentRepository studentRepository;
 
 //    public AuthResponse register(RegisterRequest request){
 //        User user= User.builder()
@@ -66,8 +72,17 @@ public class AuthService {
                 () -> new UserNotFound("Cant find user")
         );
 
+        String userId = "";
+        if (account.getWeb_role().equals(Role.ADMIN)){
+            userId = adminRepository.findByAccount(account).getId();
+        }else if (account.getWeb_role().equals(Role.USER)){
+            userId = studentRepository.findByAccount(account).getId();
+        }
+
         Map<String, Object> extraClaims = new HashMap<>();
-        extraClaims.put("role", account.getRole()); // Ví dụ thêm role của user
+        extraClaims.put("role", account.getWeb_role());// Ví dụ thêm role của user
+        extraClaims.put("user_id", userId);
+
         String jwtToken = jwtService.generateToken(extraClaims,account);
         System.out.println("token: " + jwtToken);
         return AuthResponse.builder()
