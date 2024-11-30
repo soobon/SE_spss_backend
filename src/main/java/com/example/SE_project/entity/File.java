@@ -38,4 +38,8 @@ public class File {
     @OneToMany(mappedBy = "file")
     @JsonIgnore
     private List<Print> print_list;
+
+    @OneToOne(mappedBy = "file", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private storage fileStorage;
 }

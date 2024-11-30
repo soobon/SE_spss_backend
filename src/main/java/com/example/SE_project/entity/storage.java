@@ -16,6 +16,10 @@ public class storage {
     @Column(name = "file_id", length = 100)
     private String fileid;
 
+    @OneToOne
+    @JoinColumn(name = "file_id")
+    private File file;
+
     @Lob
     @Column(name = "filedata" , length =  100000)
     private byte[] filedata;

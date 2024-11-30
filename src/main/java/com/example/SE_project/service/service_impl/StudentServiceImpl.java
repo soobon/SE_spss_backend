@@ -193,9 +193,9 @@ public class StudentServiceImpl implements StudentService {
 
         //tinh so trang
         Integer nb_of_page_in_print = 0;
-        if (start_page != null && end_page != null){// neu co start + end
-            nb_of_page_in_print = end_page-start_page+1;
-        }else if (!list_page.isEmpty()){// neu list page khong Empty
+        if (start_page != -1 && end_page != -1){// neu co start + end
+            nb_of_page_in_print = end_page-start_page + 1;
+        }else if (list_page.get(0) != -1){// neu list page khong Empty
             nb_of_page_in_print = list_page.size();
         }else{//mac dinh se in ra het tat ca trong file
             nb_of_page_in_print = file.getNum_pages();

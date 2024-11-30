@@ -1,5 +1,6 @@
 package com.example.SE_project.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,5 +32,6 @@ public class Printer {
     private Date import_date;
 
     @OneToMany(mappedBy = "printer")
+    @JsonIgnore
     private List<Print> print_list;
 }
