@@ -55,7 +55,7 @@ public class AuthService {
     public AuthResponse auth(AuthRequest request){
 
         if (accountRepository.findByUsername(request.getUsername()).isEmpty())
-            return new AuthResponse(null,"Invalid Username: Can't find Username");
+            return new AuthResponse(null,null,"Invalid Username: Can't find Username");
 
         try {
             authenticationManager.authenticate(
@@ -65,7 +65,7 @@ public class AuthService {
                     )
             );
         } catch (AuthenticationException e) {
-            return new AuthResponse(null, "Invalid Password: Wrong password");
+            return new AuthResponse(null,null, "Invalid Password: Wrong password");
         }
 
         Account account = accountRepository.findByUsername(request.getUsername()).orElseThrow(
@@ -87,7 +87,12 @@ public class AuthService {
         System.out.println("token: " + jwtToken);
         return AuthResponse.builder()
                 .token(jwtToken)
+                .user_id(userId)
                 .response("Login successfully!")
                 .build();
+    }
+
+    public String getIdFromToken(){
+        return null;
     }
 }
