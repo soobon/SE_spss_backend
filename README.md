@@ -48,5 +48,25 @@ Dự án được thực hiện bởi các thành viên:
 - **Backend**: Springboot, JWT security, Java 
 - **Cơ sở dữ liệu**: Azure MySQL 
 
+
+## Thiết kế hệ thống (System Design)
+### 1. Usecase diagram 
+
+
+### 2. Class diagram 
+https://drive.google.com/file/d/1pMq3NKJ_MsdecYKG4cv4f58ladmesuev/view
+
+### 3. ERD 
+https://drive.google.com/file/d/11hJeA4pgsoEOsat__s0R36nQ3aTMRkB1/view
+
+### 4. Architecture Diagram
+https://drive.google.com/file/d/13iDoD1ymp4RgHExSpzM-xNVe-U__BHTi/view
+
+### 5. Sơ đồ Hoạt động (Activity Diagram)
+https://drive.google.com/file/d/1CLC7ixwKZ95JIpAlt1JBjKYkZkkRo5I-/view
+
+### 6. Sơ đồ Trình tự (Sequence Diagram)
+
+
 ## Bản quyền
 HCMUT-SSPS © 2024 bởi nhóm phát triển. Mọi quyền được bảo lưu.
