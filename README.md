@@ -66,6 +66,7 @@ https://drive.google.com/file/d/13iDoD1ymp4RgHExSpzM-xNVe-U__BHTi/view
 https://drive.google.com/file/d/1CLC7ixwKZ95JIpAlt1JBjKYkZkkRo5I-/view
 
 ### 6. Sequence Diagram
+https://drive.google.com/file/d/1sbimbUieF_-1du59fSDyBGrLfA-H9i3a/view?usp=drive_link
 
 
 ## Bản quyền
