@@ -49,7 +49,7 @@ Dự án được thực hiện bởi các thành viên:
 - **Cơ sở dữ liệu**: Azure MySQL 
 
 
-## Thiết kế hệ thống (System Design)
+## Thiết kế hệ thống 
 ### 1. Usecase diagram 
 
 
@@ -62,10 +62,10 @@ https://drive.google.com/file/d/11hJeA4pgsoEOsat__s0R36nQ3aTMRkB1/view
 ### 4. Architecture Diagram
 https://drive.google.com/file/d/13iDoD1ymp4RgHExSpzM-xNVe-U__BHTi/view
 
-### 5. Sơ đồ Hoạt động (Activity Diagram)
+### 5. Activity Diagram
 https://drive.google.com/file/d/1CLC7ixwKZ95JIpAlt1JBjKYkZkkRo5I-/view
 
-### 6. Sơ đồ Trình tự (Sequence Diagram)
+### 6. Sequence Diagram
 
 
 ## Bản quyền
