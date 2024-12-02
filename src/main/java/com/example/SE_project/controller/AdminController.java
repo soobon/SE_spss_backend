@@ -16,7 +16,7 @@ import java.text.SimpleDateFormat;
 
 @RestController
 @RequestMapping("/admin")
-@CrossOrigin("*")
+@CrossOrigin(origins = "*")
 @AllArgsConstructor
 public class AdminController {
     private AdminService adminService ;

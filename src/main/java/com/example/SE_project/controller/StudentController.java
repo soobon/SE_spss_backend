@@ -22,7 +22,7 @@ import java.util.List;
 
 @RequestMapping("/student")
 @RestController
-@CrossOrigin("*")
+@CrossOrigin(origins = "*")
 @AllArgsConstructor
 public class StudentController {
 

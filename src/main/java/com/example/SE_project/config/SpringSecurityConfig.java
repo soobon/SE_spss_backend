@@ -29,7 +29,7 @@ public class SpringSecurityConfig {
 
         http.csrf(AbstractHttpConfigurer::disable);
 
-        http.cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource()));
+//        http.cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource()));
 
         http.authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/authen").permitAll()
