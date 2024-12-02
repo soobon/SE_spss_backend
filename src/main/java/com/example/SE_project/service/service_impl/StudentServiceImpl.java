@@ -259,4 +259,11 @@ public class StudentServiceImpl implements StudentService {
         printRepository.deleteById(printKey);
         return "Xoa ban in thanh cong";
     }
+
+    @Override
+    public List<printerDTO> getAllAvailablePrinter() {
+        return printerRepository.findAllByState(1).stream()
+                .map(printer -> modelMapper.map(printer, printerDTO.class))
+                .collect(Collectors.toList());
+    }
 }

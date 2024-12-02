@@ -16,4 +16,5 @@ public interface PrinterRepository extends JpaRepository<Printer,String> {
     @Query(value = "CALL countprinter()", nativeQuery = true)
     List<Object[]> countprinter();
 
+    List<Printer> findAllByState(Integer state);
 }

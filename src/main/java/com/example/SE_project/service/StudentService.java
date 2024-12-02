@@ -27,4 +27,6 @@ public interface StudentService {
 
     String deletePrintRequest(PrintKey printKey);
 
+    List<printerDTO> getAllAvailablePrinter();
+
 }

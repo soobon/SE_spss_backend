@@ -132,7 +132,7 @@ public class StudentController {
 
     @GetMapping("/getAllPrinter")
     public ResponseEntity<?> getAllPrinter(){
-        return new ResponseEntity<>(adminService.get_all_printer(),HttpStatus.OK);
+        return new ResponseEntity<>(studentService.getAllAvailablePrinter(),HttpStatus.OK);
     }
 
 }
