@@ -32,11 +32,12 @@ public class SpringSecurityConfig {
 //        http.cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource()));
 
         http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/authen").permitAll()
-                        .requestMatchers("/auth/logout").permitAll()
-                                .requestMatchers("/student/**").hasAuthority("USER")
-                                .requestMatchers("/admin/**").hasAuthority("ADMIN")
-                        .anyRequest().authenticated()
+//                        .requestMatchers("/auth/authen").permitAll()
+//                        .requestMatchers("/auth/logout").permitAll()
+//                                .requestMatchers("/student/**").hasAuthority("USER")
+//                                .requestMatchers("/admin/**").hasAuthority("ADMIN")
+//                        .anyRequest().authenticated()
+                                .anyRequest().permitAll()
         )
         .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
         .sessionManagement(session -> session
