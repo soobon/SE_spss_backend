@@ -1,5 +1,6 @@
 package com.example.SE_project.payment;
 
+import com.example.SE_project.service.paymentService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,21 +13,27 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class VNPayController {
 
-    private final VNPayService service;
+    private final VNPayService vnPayService;
+    private final paymentService paymentService;
 
     @GetMapping("/pay")
     public ResponseEntity<String> pay(
             HttpServletRequest req,
-            @RequestParam Float amount
+            @RequestParam Integer numPages,
+            @RequestParam String id
     ) throws Exception {
-        return new ResponseEntity<>(service.pay(req, amount), HttpStatus.OK);
+        return new ResponseEntity<>(vnPayService.pay(req, numPages, id), HttpStatus.OK);
     }
 
     @GetMapping("/return")
     public ResponseEntity<String> returnUrl(HttpServletRequest req){
         try {
+            //update page for student
+            String id = req.getParameter("id");
+            String numPages = req.getParameter("numPages");
+            paymentService.buy_more_page(Integer.parseInt(numPages),id);
             return ResponseEntity.status(HttpStatus.FOUND)
-                    .header("Location", service.returnUrl(req))
+                    .header("Location", vnPayService.returnUrl(req))
                     .body(null);
         } catch (Exception e) {
             throw new RuntimeException("Payment failed");

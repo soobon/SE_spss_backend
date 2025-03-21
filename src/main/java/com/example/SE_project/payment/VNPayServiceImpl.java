@@ -2,33 +2,48 @@ package com.example.SE_project.payment;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class VNPayServiceImpl implements VNPayService{
 
     private VNPayConfig config;
 
+    @Value(value = "${payment.pay.url}")
+    private String payUrl;
+    @Value(value = "${payment.return.url}")
+    private String returnUrl;
+    @Value(value = "${payment.TmnCode}")
+    private String tmnCode;
+    @Value(value = "${payment.secretKey}")
+    private String secretKey;
+    @Value(value = "${payment.api.url}")
+    private String apiUrl;
+
     @Override
-    public String pay(HttpServletRequest req, Float amount) throws Exception{
+    public String pay(HttpServletRequest req, Integer numPages, String id) throws Exception{
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String orderType = "other";
-        Long amountLong = amount.longValue()*100L;
+        Long amountLong = numPages.longValue()*500L*100L;
         String bankCode = "VNBANK";
 
         String vnp_TxnRef = config.getRandomNumber(8);
         String vnp_IpAddr = config.getIpAddress(req);
 
-        String vnp_TmnCode = config.vnp_TmnCode;
+        String vnp_TmnCode = tmnCode;
 
         Map<String, String> vnp_Params = new HashMap<>();
         vnp_Params.put("vnp_Version", vnp_Version);
@@ -41,7 +56,7 @@ public class VNPayServiceImpl implements VNPayService{
             vnp_Params.put("vnp_BankCode", bankCode);
         }
         vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
-        vnp_Params.put("vnp_OrderInfo", "Thanh toan don hang:" + vnp_TxnRef);
+        vnp_Params.put("vnp_OrderInfo", String.valueOf(id));
         vnp_Params.put("vnp_OrderType", orderType);
 
         String locate = req.getParameter("language");
@@ -50,7 +65,21 @@ public class VNPayServiceImpl implements VNPayService{
         } else {
             vnp_Params.put("vnp_Locale", "vn");
         }
-        vnp_Params.put("vnp_ReturnUrl", config.vnp_ReturnUrl);
+
+        // Tạo Map chứa tham số id
+        Map<String, String> returnUrl_param = new HashMap<>();
+        returnUrl_param.put("id", String.valueOf(id));
+        returnUrl_param.put("numPages", String.valueOf(numPages));
+
+        // Chuyển Map thành chuỗi query string
+        String queryString = returnUrl_param.entrySet()
+                .stream()
+                .map(entry -> entry.getKey() + "=" + entry.getValue())
+                .collect(Collectors.joining("&"));
+
+        // Gán URL có chứa tham số id
+        vnp_Params.put("vnp_ReturnUrl", returnUrl + "?" + queryString);
+
         vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
@@ -86,19 +115,20 @@ public class VNPayServiceImpl implements VNPayService{
             }
         }
         String queryUrl = query.toString();
-        String vnp_SecureHash = config.hmacSHA512(config.secretKey, hashData.toString());
+        String vnp_SecureHash = config.hmacSHA512(secretKey, hashData.toString());
         queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
-        String paymentUrl = config.vnp_PayUrl + "?" + queryUrl;
+        String paymentUrl = payUrl + "?" + queryUrl;
         return paymentUrl;
     }
 
     @Override
     public String returnUrl(HttpServletRequest request) {
         if ("00".equals(request.getParameter("vnp_ResponseCode"))) {
-            String redirectUrl = "http://localhost:3000/upload";
+            String redirectUrl = "http://localhost:3000/payment-success";
             return redirectUrl;
         } else {
-            throw new RuntimeException("Payment failed");
+            String redirectUrl = "http://localhost:3000/payment-failure";
+            return redirectUrl;
         }
     }
 }
