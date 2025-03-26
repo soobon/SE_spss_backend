@@ -1,0 +1,15 @@
+services:
+  spss-app:
+    container_name: compose-spss
+    image: soobon/spss-be:1
+    ports:
+      - 8080:8080
+  frontend:
+    container_name: compose-fe
+    image: soobon/local-fe:1
+    ports:
+      - 3000:3000
+    depends_on:
+      - spss-app
+    environment:
+      - REACT_APP_API_URL=http://localhost:8080
