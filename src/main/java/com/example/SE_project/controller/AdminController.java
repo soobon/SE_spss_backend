@@ -108,8 +108,19 @@ public class AdminController {
         }
     }
 
+    @GetMapping("/maxPageLeft")
+    public ResponseEntity<?> maxPageLeft(){
+        return new ResponseEntity<>(adminService.studentMaxPageLeft(),HttpStatus.OK);
+    }
 
+    @GetMapping("/pageInFaculty")
+    public ResponseEntity<?> pageInFaculity(@RequestParam Integer numPage,@RequestParam String faculty){
+        return new ResponseEntity<>(adminService.selectStudents(numPage, faculty),HttpStatus.OK);
+    }
 
-
+    @GetMapping("/each")
+    public ResponseEntity<?> printWithStatus(@RequestParam java.sql.Date date, @RequestParam String id, @RequestParam Integer status){
+        return new ResponseEntity<>(adminService.printWithStatus(date, status, id),HttpStatus.OK);
+    }
 
 }

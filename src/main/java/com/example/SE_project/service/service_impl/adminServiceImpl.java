@@ -244,5 +244,46 @@ public class adminServiceImpl implements AdminService {
 
     };
 
+    @Override
+    public List<Student> studentMaxPageLeft() {
+        List<Student> students = new ArrayList<>();
+        List<Object[]> res = adminRepository.studentMaxPageLeft();
+        for (Object[] row : res) {
+            Student student = Student.builder()
+                    .id((String) row[0])
+                    .name((String) row[1])
+                    .email((String) row[2])
+                    .faculty((String) row[3])
+                    .nb_of_page_left((Integer) row[4])
+                    .build();
+            students.add(student);
+        }
 
+        return students;
+    }
+
+    @Override
+    public List<Student> selectStudents(Integer numPage, String faculty) {
+        List<Student> students = new ArrayList<>();
+        List<Object[]> res = adminRepository.selectStudents(numPage, faculty);
+
+        for (Object[] row : res) {
+            Student student = Student.builder()
+                    .id((String) row[0])
+                    .name((String) row[1])
+                    .email((String) row[2])
+                    .faculty((String) row[3])
+                    .nb_of_page_left((Integer) row[4])
+                    .build();
+            students.add(student);
+        }
+
+        return students;
+    }
+
+    @Override
+    public Integer printWithStatus(Date date, Integer status, String id) {
+        List<Object[]> res = adminRepository.printWithStatus(date, status, id);
+        return res.size();
+    }
 }

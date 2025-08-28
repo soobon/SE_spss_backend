@@ -37,4 +37,10 @@ public interface AdminService {
     public Print refusePrint(Integer order_num , String file_id , Integer status);
 
     public overallDTO getOverall();
+
+    public List<Student> studentMaxPageLeft();
+
+    public List<Student> selectStudents(Integer numPage, String faculty);
+
+    public Integer printWithStatus(Date date, Integer status, String id);
 }

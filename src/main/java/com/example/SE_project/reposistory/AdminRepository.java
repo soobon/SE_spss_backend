@@ -30,6 +30,12 @@ public interface AdminRepository extends JpaRepository<Admin, String> {
                                     @Param("model") String model,
                                     @Param("imp_date") java.sql.Date impDate);
 
+    @Query(value = "CALL student_with_max_page_left()", nativeQuery = true)
+    List<Object[]> studentMaxPageLeft();
 
+    @Query(value = "CALL SelectStudents(:numberPage, :faculty)", nativeQuery = true)
+    List<Object[]> selectStudents(@Param("numberPage") Integer numPage, @Param("faculty") String faculty);
 
+    @Query(value = "CALL GetSuccessfulPrintsAfterDate(:imp_date, :status, :id)", nativeQuery = true)
+    List<Object[]> printWithStatus(@Param("imp_date") java.sql.Date impDate, @Param("status") Integer status, @Param("id") String id);
 }
