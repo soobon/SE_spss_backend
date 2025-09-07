@@ -45,23 +45,6 @@ public class SpringSecurityConfig {
         )
         .authenticationProvider(authenticationProvider);
 
-//        http.exceptionHandling(e -> e
-//                .authenticationEntryPoint((request, response, authException) -> {
-//                    // Xử lý lỗi không xác thực (401)
-//                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-//                    response.setContentType("application/json");
-//                    response.setCharacterEncoding("UTF-8");
-//                    response.getWriter().write("{\"error\": \"Unauthorized - Please log in\"}");
-//                })
-//                .accessDeniedHandler((request, response, accessDeniedException) -> {
-//                    // Xử lý lỗi không có quyền (403)
-//                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-//                    response.setContentType("application/json");
-//                    response.setCharacterEncoding("UTF-8");
-//                    response.getWriter().write("{\"error\": \"Forbidden - You don't have permission to access this resource\"}");
-//                })
-//        );
-
         return http.build();
     }
 

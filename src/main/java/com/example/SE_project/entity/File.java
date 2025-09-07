@@ -25,7 +25,7 @@ public class File {
     private String fileid;
     @Column(name = "upload_date", nullable = false)
     private Date upload_date;
-    @Column(name = "file_name", length = 20, nullable = false)
+    @Column(name = "file_name", length = 50, nullable = false)
     private String file_name;
     @Column(name = "num_pages",nullable = false)
     private Integer num_pages;

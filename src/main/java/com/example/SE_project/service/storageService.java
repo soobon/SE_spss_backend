@@ -14,23 +14,31 @@ public class storageService {
     @Autowired
     private storageRepository storageRepository ;
 
-    public String uploadFile(MultipartFile file, String id) throws IOException {
-        byte[] compressedData = fileUtils.compressImage(file.getBytes());
-        System.out.println("Original size: " + file.getSize() + " bytes");
-        System.out.println("Compressed size: " + compressedData.length + " bytes");
+    public String uploadFile(MultipartFile file, String fileId) throws IOException {
+        try {
+            byte[] compressedData = fileUtils.compressImage(file.getBytes());
+            System.out.println("Original size: " + file.getSize() + " bytes");
+            System.out.println("Compressed size: " + compressedData.length + " bytes");
 
-        storage filedata = storageRepository.save(storage.builder()
-                .fileid(id)
-                .filedata(compressedData)
-                .build());
+            storageRepository.save(storage.builder()
+                    .fileid(fileId)
+                    .filedata(compressedData)
+                    .build());
 
-        if (filedata != null) {
-            return "File uploaded successfully: " + id;
-        } else {
-            return "File upload failed: " + id;
+            return "File uploaded successfully: " + fileId;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
+    public String deleteFile(String fileid) throws Exception {
+        try {
+            storageRepository.deleteById(fileid);
+            return "File deleted successfully: " + fileid;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public byte[] downloadFile (String fileid) {
         Optional<storage> filedata = storageRepository.findById(fileid);

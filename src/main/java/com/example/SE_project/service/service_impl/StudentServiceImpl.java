@@ -11,13 +11,24 @@ import com.example.SE_project.reposistory.FileRepository;
 import com.example.SE_project.reposistory.PrintRepository;
 import com.example.SE_project.reposistory.PrinterRepository;
 import com.example.SE_project.reposistory.StudentRepository;
+import com.example.SE_project.service.IS3Service;
 import com.example.SE_project.service.StudentService;
 import com.example.SE_project.service.storageService;
+import com.example.SE_project.utils.TransactionManager;
+import com.example.SE_project.utils.TransactionStep;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.AwsCredentials;
+import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.Bucket;
+import software.amazon.awssdk.services.s3.model.ListBucketsResponse;
 
 import java.io.IOException;
 import java.sql.Date;
@@ -40,6 +51,8 @@ public class StudentServiceImpl implements StudentService {
     private PrinterRepository printerRepository;
 
     private FileRepository fileRepository;
+
+    private IS3Service s3Service;
 
     @Override
     public List<StudentDTO> allStudents() {
@@ -133,7 +146,7 @@ public class StudentServiceImpl implements StudentService {
     private storageService storageService;
 
     @Override
-    public File addNewFile(String id, NewFileDTO newFileDTO , MultipartFile f ) {
+    public File addNewFile(String studentId, NewFileDTO newFileDTO , MultipartFile f ) {
         //generate ID for file
         StringBuilder file_id = null;
         while (true) {
@@ -149,8 +162,8 @@ public class StudentServiceImpl implements StudentService {
         //java.sql.Date
         Date sqlDate = Date.valueOf(localDate);
 
-        Student student = studentRepository.findById(id).orElseThrow(
-                () -> new UserNotFound("Can't find Student by ID: " + id)
+        Student student = studentRepository.findById(studentId).orElseThrow(
+                () -> new UserNotFound("Can't find Student by ID: " + studentId)
         );
 
         File file = File.builder()
@@ -160,9 +173,26 @@ public class StudentServiceImpl implements StudentService {
                 .num_pages(newFileDTO.getNum_pages())
                 .student(student)
                 .build();
+
+        final String computedFileId = file_id.toString();
         try {
-            storageService.uploadFile(f,file_id.toString());
-        } catch (IOException e) {
+            //2 different stream, need to handle as a transaction
+            TransactionManager transactionManager = new TransactionManager();
+
+            //upload to local storage, modify basic data in file entity
+            transactionManager.addStep(new TransactionStep() {
+                public void doActions() throws Exception {storageService.uploadFile(f, computedFileId);}
+                public void undoActions() throws Exception {storageService.deleteFile(computedFileId);}
+            });
+
+            //upload to S3
+            transactionManager.addStep(new TransactionStep() {
+                public void doActions() throws Exception {s3Service.uploadFile(f, computedFileId, studentId);}
+                public void undoActions() throws Exception {s3Service.deleteFile(computedFileId, studentId);}
+            });
+
+            transactionManager.execStep();
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
         return fileRepository.save(file);
@@ -173,6 +203,7 @@ public class StudentServiceImpl implements StudentService {
         File file = fileRepository.findById(file_id).orElseThrow(
                 () -> new UserNotFound("File not found by Id:" + file_id)
         );
+        //soft delete
         fileRepository.deleteById(file_id);
         return "File deleted successfully";
     }
